@@ -7,37 +7,81 @@ typedef struct node {
 } node;
 
 // Returns number of nodes in the linkedList.
-int length(node* head)
-{
-   struct node *tmp = head;
-    int len = 0;
-   while (tmp != NULL)
-   {
-      tmp = tmp->next;
-      len++;
-   }
+int length(node* head) {
+	int counter = 0;
+	struct node* temp = head;
 
-   return (len);
+	while (temp != NULL) {
+		counter++;
+		temp = temp->next;
+	}
+	
+	return counter;
 }
 
 // parses the string in the linkedList
 //  if the linked list is head -> |a|->|b|->|c|
-//  then toCString function wil return "abc"
-char* toCString(node* head)
-{
+//  then toCString function will return "abc"
+char* toCString(node* head){
+	char* result = (char*)malloc(sizeof(char) * (length(head)+ 1));
+	if (result == NULL) {
+		printf("Memory allocation failed!\n");
+		exit(1);
+	}
+	int counter = 0;
+	struct node* temp = head;
+
+	while (temp != NULL) {
+		result[counter] = temp->letter;
+		counter++;
+		temp = temp->next;
+	}
+
+	result[counter] = '\0';
+	
+	return result;
 }
 
 // inserts character to the linkedlist
-// f the linked list is head -> |a|->|b|->|c|
-// then insertChar(&head, 'x') will update the linked list as foolows:
+// if the linked list is head -> |a|->|b|->|c|
+// then insertChar(&head, 'x') will update the linked list as follows:
 // head -> |a|->|b|->|c|->|x|
 void insertChar(node** pHead, char c)
 {
+	struct node* newChar = (struct node*)malloc(sizeof(struct node));
+	newChar->letter = c;
+	newChar->next = NULL;
+
+	if (*pHead == NULL) {
+		*pHead = newChar;
+		return;
+	}
+
+	struct node* temp = *pHead;
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+
+	temp->next = newChar;
 }
 
 // deletes all nodes in the linkedList.
 void deleteList(node** pHead)
 {
+	if (*pHead == NULL) {
+		return;
+	}
+
+	struct node* temp = *pHead;
+	struct node* nextNode;
+
+	while (temp->next != NULL) {
+		nextNode = temp->next;
+		free(temp);
+		temp = nextNode;
+	}
+
+	*pHead = NULL;
 }
 
 int main(void)
